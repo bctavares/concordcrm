@@ -1,10 +1,9 @@
 FROM php:8.2-fpm
 
-# Instalar dependências do sistema e extensões PHP
+# Instala dependências do sistema e extensões PHP obrigatórias e recomendadas
 RUN apt-get update && apt-get install -y \
-    curl \
-    git \
     unzip \
+    git \
     cron \
     libzip-dev \
     libpng-dev \
@@ -13,14 +12,35 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libcurl4-openssl-dev \
-    libicu-dev \
     libssl-dev \
-    libmagickwand-dev \
     libimap-dev \
-    && docker-php-ext-install \
-    bcmath ctype mbstring openssl pdo pdo_mysql tokenizer curl iconv gd fileinfo dom zip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-    && docker-php-ext-install imap
+    && docker-php-ext-install \
+        bcmath \
+        ctype \
+        mbstring \
+        openssl \
+        pdo \
+        pdo_mysql \
+        tokenizer \
+        curl \
+        iconv \
+        gd \
+        fileinfo \
+        dom \
+        zip \
+        imap
 
-# Instalar Composer manualmente
+# Habilita funções PHP que podem estar desabilitadas
+RUN { \
+    echo "memory_limit = 256M"; \
+    echo "disable_functions ="; \
+    } > /usr/local/etc/php/conf.d/custom.ini
+
+# Instala o Composer globalmente
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+WORKDIR /var/www/html
+
+CMD ["php-fpm"]
