@@ -1,10 +1,11 @@
 FROM php:8.2-fpm
 
-# Instalar dependências do sistema
+# Instalar dependências necessárias
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
     cron \
+    autoconf \
     libzip-dev \
     libpng-dev \
     libjpeg-dev \
@@ -18,10 +19,9 @@ RUN apt-get update && apt-get install -y \
     libpam0g-dev \
     libxpm-dev \
     libtool \
-    autoconf \
+    php-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-        --with-libdir=lib/x86_64-linux-gnu \
     && docker-php-ext-install \
         bcmath \
         ctype \
@@ -38,11 +38,11 @@ RUN apt-get update && apt-get install -y \
         zip \
         imap
 
-# Desbloquear funções PHP comuns e ajustar memória
+# Ajustar configurações do PHP
 RUN echo "memory_limit = 256M\n" \
     "disable_functions =" > /usr/local/etc/php/conf.d/custom.ini
 
-# Instalar Composer
+# Instalar Composer globalmente
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /var/www/html
