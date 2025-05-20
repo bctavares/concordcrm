@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-# Instala dependências para extensões PHP obrigatórias e recomendadas
+# Instalar dependências de sistema
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
@@ -20,7 +20,6 @@ RUN apt-get update && apt-get install -y \
     libxpm-dev \
     libtool \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install \
         bcmath \
         ctype \
@@ -34,10 +33,13 @@ RUN apt-get update && apt-get install -y \
         gd \
         fileinfo \
         dom \
-        zip \
-        imap
+        zip
 
-# Ajusta configuração PHP
+# Compila imap separadamente
+RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
+    && docker-php-ext-install imap
+
+# Ajuste de memória e funções PHP
 RUN echo "memory_limit = 256M\n" \
     "disable_functions =" > /usr/local/etc/php/conf.d/custom.ini
 
