@@ -1,11 +1,12 @@
 FROM php:8.2-fpm
 
+# Instalar dependências do sistema e extensões PHP
 RUN apt-get update && apt-get install -y \
-    cron \
+    curl \
     git \
     unzip \
+    cron \
     libzip-dev \
-    zip \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -13,7 +14,6 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libcurl4-openssl-dev \
     libicu-dev \
-    libmcrypt-dev \
     libssl-dev \
     libmagickwand-dev \
     libimap-dev \
@@ -22,6 +22,5 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install imap
 
-
-
-CMD ["php-fpm"]
+# Instalar Composer manualmente
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
