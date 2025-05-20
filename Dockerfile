@@ -22,11 +22,6 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install imap
 
-# Instalar Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copiar cron jobs
-COPY ./cron/crontab /etc/cron.d/concordcrm
-RUN chmod 0644 /etc/cron.d/concordcrm && crontab /etc/cron.d/concordcrm
 
 CMD ["php-fpm"]
