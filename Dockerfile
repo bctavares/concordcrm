@@ -24,11 +24,9 @@ RUN apt-get update && apt-get install -y \
         bcmath \
         ctype \
         mbstring \
-        openssl \
         pdo \
         pdo_mysql \
         tokenizer \
-        curl \
         iconv \
         gd \
         fileinfo \
