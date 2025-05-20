@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libcurl4-openssl-dev \
     libssl-dev \
-    libimap-dev \
+    libc-client-dev \
+    libkrb5-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install \
@@ -33,10 +34,8 @@ RUN apt-get update && apt-get install -y \
         imap
 
 # Habilita funções PHP que podem estar desabilitadas
-RUN { \
-    echo "memory_limit = 256M"; \
-    echo "disable_functions ="; \
-    } > /usr/local/etc/php/conf.d/custom.ini
+RUN echo "memory_limit = 256M\n" \
+    "disable_functions =" > /usr/local/etc/php/conf.d/custom.ini
 
 # Instala o Composer globalmente
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
