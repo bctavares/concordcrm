@@ -26,7 +26,6 @@ RUN apt-get update && apt-get install -y \
         mbstring \
         pdo \
         pdo_mysql \
-        tokenizer \
         iconv \
         gd \
         fileinfo \
